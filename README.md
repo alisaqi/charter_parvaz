@@ -1,4 +1,4 @@
-# Charter Ticket Bot Pyrogram
+# Charter Parvaz bot
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/charter-tickets-bot/charter-ticket-bot-pyrogram.git
+git remote add origin https://gitlab.com/charter-tickets-bot/charter-parvaz-bot.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/charter-tickets-bot/charter-ticket-bot-pyrogram/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/charter-tickets-bot/charter-parvaz-bot/-/settings/integrations)
 
 ## Collaborate with your team
 
