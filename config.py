@@ -101,6 +101,12 @@ cities = {
         'airportCode': 'KIH',
         'timezone': 'Asia/Muscat',
         'timezoneOffsetStr': '+04:00',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': True,
+            'internationalId': 5,
+        }
     },
     'قشم' : {
         'id': 8,
@@ -110,6 +116,12 @@ cities = {
         'airportCode': 'KIH',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': True,
+            'internationalId': 5,
+        }
     },
     'تبریز' : {
         'id': 9,
@@ -119,6 +131,12 @@ cities = {
         'airportCode': 'KIH',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': True,
+            'internationalId': 5,
+        }
     },
     'بندرعباس' : {
         'id': 10,
@@ -128,6 +146,12 @@ cities = {
         'airportCode': 'KIH',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
     },
     # 11: 'Yerevan',
     # 12: 'Istanbul_Sabiha',

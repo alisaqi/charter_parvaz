@@ -1,9 +1,13 @@
 # coding=utf8
 
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup
-from charterTicket import flights_handler
-from persiantools.jdatetime import JalaliDate
+import pyromod.listen
 from pyrogram import Client, filters
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup
+from pyrogram.errors import FloodWait
+from charterTicket import flights_handler
+from persiantools.jdatetime import JalaliDate, JalaliDateTime
+from pyrogram import Client, filters
+from pykeyboard import InlineKeyboard, InlineButton
 import logging
 import datetime
 import pytz
@@ -17,12 +21,12 @@ app = Client("Charter_ticketbot",
              )
 
 
-users_db = {}
+usersDatabase = {}
 flights_result = {}
 flight_date = 0
 destination_city = None
 departure_city = None
-next_flight_result_iter = 0
+next_flight_result_Iter = 0
 
 def jalali_dates(today):
     dates = {}
@@ -34,13 +38,13 @@ def jalali_dates(today):
 
 
 @app.on_message(filters.command('start') & filters.private)
-async def pre_check_user(client, message):
-    global users_db
+async def check_user(client, message):
+    global usersDatabase
     try:
-        if message.from_user.id not in users_db.keys():
+        if message.from_user.id not in usersDatabase.keys():
             await app.send_message(
                 chat_id=message.chat.id,
-                text='سلام به ربات Flight Charter خوش آمدید\n\n⚠️ شما هنوز عضو کانال ما نشدین، لطفا جهت ادامه فعالیت روی دکمه زیر کلیک کنید.',
+                text='سلام به ربات Charter Parvaz خوش آمدید\n\n⚠️ شما هنوز عضو کانال ما نشدین، لطفا جهت ادامه فعالیت روی دکمه زیر کلیک کنید.',
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [  # First row
@@ -58,6 +62,10 @@ async def pre_check_user(client, message):
                     ]
                 )
             )
+
+        elif message.from_user.id in usersDatabase.keys():
+            await start_menu(client, message)
+
 
     except Exception as ex:
         print(logging.ERROR, ex)
@@ -98,38 +106,25 @@ async def flight_order (client, message):
                 [
                     ["پرواز داخلی 🇮🇷"],
                     ["پرواز خارجی 🌍"],
+                    ["بازگشت به منوی اصلی 🏠"],
                 ],
                 resize_keyboard=True,
                 one_time_keyboard=True
             ))
 
         if answer.text == "پرواز داخلی 🇮🇷":
-            await domestic_flights_order(client, message)
-        # elif answer.text == "محاسبه قیمت لحظه ای 💸":
-            # await serviceFeePriceCalculator(client, message)
+            await domestic_flight_order(client, message)
+        elif answer.text == "پرواز خارجی 🌍":
+            await international_flight_order(client, message)
+        elif answer.text == "بازگشت به منوی اصلی 🏠":
+            await start_menu(client, message)
 
     except Exception as ex:
         print(logging.ERROR, ex)
         pass
 
-# @app.on_inline_query()
-# async def inline_query(client, inline_query):
-#     for inline_result in config.cities.values():
-#         await inline_query.answer(
-#             results=[
-#                 InlineQueryResultArticle(
-#                     title= inline_result['name'],
-#                     description= inline_result['title'],
-#                     input_message_content=InputTextMessageContent(
-#                         inline_result['name']
-#                     )
-#                 )
-#             ],
-#             cache_time=1
-#         )
-
 @app.on_message(filters.private)
-async def domestic_flights_order (client, message):
+async def domestic_flight_order (client, message):
     global flights_result
     global flight_date
     global departure_city
@@ -139,10 +134,9 @@ async def domestic_flights_order (client, message):
         departure_city = await app.ask (
             chat_id=message.chat.id,
             text='لطفا مبدا خود را انتخاب کنید:',
-            # reply_markup=ReplyKeyboardMarkup()
             reply_markup=ReplyKeyboardMarkup(
                 [
-                    [cities] for cities in config.cities.keys()
+                    [city] for city in sorted(config.cities.keys(), key=lambda city: config.cities[city]['type']['domesticId']) if config.cities[city]['type']['domestic'] == True
                 ],
                 resize_keyboard=True,
                 one_time_keyboard=True
@@ -154,7 +148,7 @@ async def domestic_flights_order (client, message):
             text='لطفا مقصد خود را انتخاب کنید:',
             reply_markup=ReplyKeyboardMarkup(
                 [
-                    [dates] for dates in config.cities.keys()
+                    [city] for city in sorted(config.cities.keys(), key=lambda city: config.cities[city]['type']['domesticId']) if config.cities[city]['name'] != departure_city.text and config.cities[city]['type']['domestic'] == True
                 ],
                 resize_keyboard=True,
                 one_time_keyboard=True
@@ -173,17 +167,17 @@ async def domestic_flights_order (client, message):
             )
         )
 
-        previous_message = await app.send_message(
+        previousMessage = await app.send_message(
             chat_id=message.chat.id,
             text="ربات در حال گرفتن اطلاعات پرواز ها می باشد 🚀"
         )
 
-        flights_result = flights_handler(departure_city= config.cities[departure_city.text]['title'],
-                                         destination_city= config.cities[destination_city.text]['title'],
-                                         flight_date= flight_date.text)
+        flights_result = flights_handler(departureCity= config.cities[departure_city.text]['title'],
+                                         destinationCity= config.cities[destination_city.text]['title'],
+                                         dateOrder= flight_date.text)
 
         # print(flightsResult)
-        await flights_result_show(client, message, previous_message.id, nextMessage= True, previousMessage= False)
+        await flights_result_show(client, message, previousMessage.id, nextMessage= True, previousMessage= False)
 
 
     except Exception as ex:
@@ -191,34 +185,113 @@ async def domestic_flights_order (client, message):
         pass
 
 @app.on_message(filters.private)
-async def flights_result_show (client, message, previous_message_id, nextMessage, previousMessage):
-    global next_flight_result_iter
+async def international_flight_order (client, message):
+    global flights_result
+    global flight_date
+    global departure_city
+    global destination_city
+
+    try:
+        departure_city = await app.ask (
+            chat_id=message.chat.id,
+            text='لطفا مبدا خود را انتخاب کنید:',
+            reply_markup=ReplyKeyboardMarkup(
+                [
+                    [city] for city in sorted(config.cities.keys(), key=lambda city: config.cities[city]['type']['internationalId']) if config.cities[city]['type']['international'] == True
+                ],
+                resize_keyboard=True,
+                one_time_keyboard=True
+            )
+        )
+
+        destination_city = await app.ask(
+            chat_id=message.chat.id,
+            text='لطفا مقصد خود را انتخاب کنید:',
+            reply_markup=ReplyKeyboardMarkup(
+                [
+                    [city] for city in sorted(config.cities.keys(), key=lambda city: config.cities[city]['type']['internationalId']) if config.cities[city]['name'] != departure_city.text and config.cities[city]['type']['international'] == True
+                ],
+                resize_keyboard=True,
+                one_time_keyboard=True
+            )
+        )
+
+        flight_date = await app.ask (
+            chat_id=message.chat.id,
+            text='لطفا تاریخ سفر خود را انتخاب کنید:',
+            reply_markup=ReplyKeyboardMarkup(
+                [
+                    [dates] for dates in jalali_dates(JalaliDate.today()).values()
+                ],
+                resize_keyboard=True,
+                one_time_keyboard=True
+            )
+        )
+
+        previousMessage = await app.send_message(
+            chat_id=message.chat.id,
+            text="ربات در حال گرفتن اطلاعات پرواز ها می باشد 🚀"
+        )
+
+        flights_result = flights_handler(departureCity= config.cities[departure_city.text]['title'],
+                                         destinationCity= config.cities[destination_city.text]['title'],
+                                         dateOrder= flight_date.text)
+
+        # print(flightsResult)
+        await flights_result_show(client, message, previousMessage.id, nextMessage= True, previousMessage= False)
+
+
+    except Exception as ex:
+        print(logging.ERROR, ex)
+        pass
+
+@app.on_message(filters.private)
+async def flights_result_show (client, message, previousMessageID, nextMessage, previousMessage):
+    global next_flight_result_Iter
     global flights_result
     global flight_date
     global destination_city
     global departure_city
 
+
+    # try:
+    #     while nextFlightResultIter < len(flightsResult.keys()):
+    #         result = await app.edit_message_text(
+    #             chat_id=message.chat.id,
+    #             message_id=editMessage.id,
+    #             text=f"شماره پرواز: {flightsResult[nextFlightResultIter]['flightNumber']}\n\nقیمت : {flightsResult[nextFlightResultIter]['price']}\nتاریخ پرواز: {flightDate.text}\nساعت پرواز: {flightsResult[nextFlightResultIter]['departure']}\n\nتعداد صندلی خالی: {flightsResult[nextFlightResultIter]['freeSeats']}\n\nهواپیمایی: {flightsResult[nextFlightResultIter]['company']}",
+    #             reply_markup=InlineKeyboardMarkup(
+    #                 [
+    #                     [
+    #                         InlineKeyboardButton(
+    #                             "خرید این بلیط 🛒",
+    #                             callback_data="purchesTicket"
+    #                         )
+    #                     ],
+    #                 ]
+    #             )
+    #         )
     try:
         if flights_result != False:
-            commission = config.flightsCommision[flights_result[next_flight_result_iter]['ticketType']] + 1
+            commission = config.flightsCommision[flights_result[next_flight_result_Iter]['ticketType']] + 1
             lastResultId = list(flights_result.keys())[-1]
             firstResultId = list(flights_result.keys())[0]
-            purchaseUrl = 'https://t.me/ASoDme'
+            purchase_url = 'https://t.me/ASoDme'
             # purchaseUrl = 'http://ticket-charter.com/Ticket' + '-' + config.cities[departureCity.text]['title'] + '-' + config.cities[destinationCity.text]['title'] + '.html' + '?' + 't='  + flightDate.text
-            finalText = f"پرواز {departure_city.text} 🛫 به {destination_city.text} 🛬\n\n✈️ شماره پرواز : {flights_result[next_flight_result_iter]['flightNumber']}\n\n🎫 نوع بلیط : {flights_result[next_flight_result_iter]['ticketType']}\n\n💵 قیمت : {int(float(flights_result[next_flight_result_iter]['priceDigit'] * commission)):,} تومان\n\n📅 تاریخ و ساعت پرواز: \n{flight_date.text}\n{flights_result[next_flight_result_iter]['departure']}\n💺 تعداد صندلی خالی: {flights_result[next_flight_result_iter]['freeSeats']}\n\n🌐 هواپیمایی: {flights_result[next_flight_result_iter]['company']}"
+            finalText = f"پرواز {departure_city.text} 🛫 به {destination_city.text} 🛬\n\n✈️ شماره پرواز : {flights_result[next_flight_result_Iter]['flightNumber']}\n\n🎫 نوع بلیط : {flights_result[next_flight_result_Iter]['ticketType']}\n\n💵 قیمت : {int(float(flights_result[next_flight_result_Iter]['priceDigit'] * commission)):,} تومان\n\n📅 تاریخ و ساعت پرواز: \n{flight_date.text}\n{flights_result[next_flight_result_Iter]['departure']}\n💺 تعداد صندلی خالی: {flights_result[next_flight_result_Iter]['freeSeats']}\n\n🌐 هواپیمایی: {flights_result[next_flight_result_Iter]['company']}"
 
 
-            if previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_iter] == (firstResultId) and len(flights_result.keys()) > 1:
+            if previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_Iter] == (firstResultId) and len(flights_result.keys()) > 1:
                 await app.edit_message_text(
                     chat_id=message.chat.id,
-                    message_id=previous_message_id,
+                    message_id=previousMessageID,
                     text=finalText,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton(
                                     "خرید این بلیط 🛒",
-                                    url=purchaseUrl
+                                    url=purchase_url
                                 )
                             ],
                             [
@@ -236,7 +309,7 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "بازگشت به منو اصلی 🔙",
+                                    "بازگشت به منوی اصلی 🏠",
                                     callback_data="backToMain"
                                 )
                             ],
@@ -245,17 +318,17 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
 
                     )
                 )
-            elif previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_iter] == (firstResultId) and len(flights_result.keys()) == 1:
+            elif previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_Iter] == (firstResultId) and len(flights_result.keys()) == 1:
                 await app.edit_message_text(
                     chat_id=message.chat.id,
-                    message_id=previous_message_id,
+                    message_id=previousMessageID,
                     text=finalText,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton(
                                     "خرید این بلیط 🛒",
-                                    url=purchaseUrl
+                                    url=purchase_url
                                 )
                             ],
                             [
@@ -266,7 +339,7 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "بازگشت به منو اصلی 🔙",
+                                    "بازگشت به منوی اصلی 🏠",
                                     callback_data="backToMain"
                                 )
                             ],
@@ -275,17 +348,17 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
 
                     )
                 )
-            elif previousMessage == True and nextMessage == False and list(flights_result.keys())[next_flight_result_iter] == (lastResultId):
+            elif previousMessage == True and nextMessage == False and list(flights_result.keys())[next_flight_result_Iter] == (lastResultId):
                 await app.edit_message_text(
                     chat_id = message.chat.id,
-                    message_id = previous_message_id,
+                    message_id = previousMessageID,
                     text= finalText,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton(
                                     "خرید این بلیط 🛒",
-                                    url= purchaseUrl
+                                    url= purchase_url
                                 )
                             ],
                             [
@@ -303,24 +376,24 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "بازگشت به منو اصلی 🔙",
+                                    "بازگشت به منوی اصلی 🏠",
                                     callback_data="backToMain"
                                 )
                             ]
                         ]
                     )
                 )
-            elif previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_iter] != firstResultId and list(flights_result.keys())[next_flight_result_iter] != lastResultId:
+            elif previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_Iter] != firstResultId and list(flights_result.keys())[next_flight_result_Iter] != lastResultId:
                 await app.edit_message_text(
                     chat_id = message.chat.id,
-                    message_id = previous_message_id,
+                    message_id = previousMessageID,
                     text=finalText,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton(
                                     "خرید این بلیط 🛒",
-                                    url= purchaseUrl
+                                    url= purchase_url
                                 )
                             ],
                             [
@@ -341,25 +414,25 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "بازگشت به منو اصلی 🔙",
+                                    "بازگشت به منوی اصلی 🏠",
                                     callback_data="backToMain"
                                 )
                             ]
                         ]
                     )
                 )
-            elif previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_iter] != firstResultId and list(flights_result.keys())[next_flight_result_iter] == lastResultId:
+            elif previousMessage == False and nextMessage == True and list(flights_result.keys())[next_flight_result_Iter] != firstResultId and list(flights_result.keys())[next_flight_result_Iter] == lastResultId:
 
                 await app.edit_message_text(
                     chat_id = message.chat.id,
-                    message_id = previous_message_id,
+                    message_id = previousMessageID,
                     text=finalText,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton(
                                     "خرید این بلیط 🛒",
-                                    url= purchaseUrl
+                                    url= purchase_url
                                 )
                             ],
                             [
@@ -376,24 +449,24 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "بازگشت به منو اصلی 🔙",
+                                    "بازگشت به منوی اصلی 🏠",
                                     callback_data="backToMain"
                                 )
                             ]
                         ]
                     )
                 )
-            elif previousMessage == True and nextMessage == False and list(flights_result.keys())[next_flight_result_iter] != firstResultId and list(flights_result.keys())[next_flight_result_iter] != lastResultId:
+            elif previousMessage == True and nextMessage == False and list(flights_result.keys())[next_flight_result_Iter] != firstResultId and list(flights_result.keys())[next_flight_result_Iter] != lastResultId:
                 await app.edit_message_text(
                     chat_id=message.chat.id,
-                    message_id=previous_message_id,
+                    message_id=previousMessageID,
                     text=finalText,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton(
                                     "خرید این بلیط 🛒",
-                                    url= purchaseUrl
+                                    url= purchase_url
                                 )
                             ],
                             [
@@ -414,24 +487,24 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "بازگشت به منو اصلی 🔙",
+                                    "بازگشت به منوی اصلی 🏠",
                                     callback_data="backToMain"
                                 )
                             ]
                         ]
                     )
                 )
-            elif previousMessage == True and nextMessage == False and list(flights_result.keys())[next_flight_result_iter] == firstResultId and list(flights_result.keys())[next_flight_result_iter] != lastResultId:
+            elif previousMessage == True and nextMessage == False and list(flights_result.keys())[next_flight_result_Iter] == firstResultId and list(flights_result.keys())[next_flight_result_Iter] != lastResultId:
                 await app.edit_message_text(
                     chat_id=message.chat.id,
-                    message_id=previous_message_id,
+                    message_id=previousMessageID,
                     text=finalText,
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton(
                                     "خرید این بلیط 🛒",
-                                    url= purchaseUrl
+                                    url= purchase_url
                                 )
                             ],
                             [
@@ -448,7 +521,7 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                             ],
                             [
                                 InlineKeyboardButton(
-                                    "بازگشت به منو اصلی 🔙",
+                                    "بازگشت به منوی اصلی 🏠",
                                     callback_data="backToMain"
                                 )
                             ]
@@ -459,7 +532,7 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
         elif flights_result == False:
             await app.edit_message_text(
                 chat_id=message.chat.id,
-                message_id=previous_message_id,
+                message_id=previousMessageID,
                 text="⚠️ متاسفانه هیچ بلیطی یافت نشد",
                 reply_markup=InlineKeyboardMarkup(
                     [
@@ -471,7 +544,7 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
                         ],
                         [
                             InlineKeyboardButton(
-                                "بازگشت به منو اصلی 🔙",
+                                "بازگشت به منوی اصلی 🏠",
                                 callback_data="backToMain"
                             )
                         ],
@@ -486,14 +559,14 @@ async def flights_result_show (client, message, previous_message_id, nextMessage
 
 @app.on_callback_query()
 async def callback_query_handler(client, callback_query):
-    global next_flight_result_iter
+    global next_flight_result_Iter
 
     try:
         if callback_query.data == "membershipApproval":
             async for members in app.get_chat_members(chat_id=config.channelsIDs["Parvaz_charters"]):
                 if members.user.id == callback_query.from_user.id:
                     foundUser = True
-                    users_db[callback_query.from_user.id] = {
+                    usersDatabase[callback_query.from_user.id] = {
                         "username": callback_query.from_user.username,
                         "firstName": callback_query.from_user.first_name,
                         "id": callback_query.from_user.id,
@@ -510,25 +583,27 @@ async def callback_query_handler(client, callback_query):
                     await start_menu(client, callback_query.message)
 
         elif callback_query.data == "nextFlightResult":
-            next_flight_result_iter += 1
+            next_flight_result_Iter += 1
             await flights_result_show(client, callback_query.message, callback_query.message.id, nextMessage = True, previousMessage = False)
 
         elif callback_query.data == "previousFlightResult":
-            next_flight_result_iter -= 1
+            next_flight_result_Iter -= 1
             await flights_result_show(client, callback_query.message, callback_query.message.id, nextMessage = False, previousMessage = True)
 
         elif callback_query.data == "lastFlightResult":
-            next_flight_result_iter -= 1
+            next_flight_result_Iter -= 1
             await flights_result_show(client, callback_query.message, callback_query.message.id, nextMessage = False, previousMessage = True)
 
         elif callback_query.data == "firstFlightResult":
-            next_flight_result_iter += 1
+            next_flight_result_Iter += 1
             await flights_result_show(client, callback_query.message, callback_query.message.id, nextMessage = True, previousMessage = False)
 
         elif callback_query.data == "newFlightSearch":
+            next_flight_result_Iter = 0
             await flight_order (client, callback_query.message)
 
         elif callback_query.data == "backToMain":
+            next_flight_result_Iter = 0
             await start_menu(client, callback_query.message)
 
 
