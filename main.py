@@ -89,8 +89,24 @@ async def start_menu(client, message):
 
         if answer.text == "بلیط هواپیما ✈️":
             await flight_order(client, message)
-        # elif answer.text == "محاسبه قیمت لحظه ای 💸":
-            # await serviceFeePriceCalculator(client, message)
+        elif answer.text == "بلیط اتوبوس 🚌":
+            await app.send_message(chat_id=message.chat.id,
+                                   text='این بخش فعلا فعال نیست ⚠️')
+            await start_menu(client, message)
+
+        elif answer.text == "ارتباط با ما 📩":
+            await app.send_message(chat_id=message.chat.id,
+                                   text='شما می توانید از طریق یکی از روش های زیر با ما در ارتباط باشید',
+                                   reply_markup=InlineKeyboardMarkup(
+                                       [
+                                                # [InlineKeyboardButton("اینستاگرام", url="https://instagram.com/parvaz_charters")],
+                                                [InlineKeyboardButton("تلگرام", url="https://t.me/ASoDme")],
+                                                # [InlineKeyboardButton("وبسایت", url="https://parvazcharters.com")],
+                                                [InlineKeyboardButton("بازگشت به منوی اصلی 🏠", callback_data="backToMain")]
+                                       ]
+                                   )
+                                   )
+
 
     except Exception as ex:
         print(logging.ERROR, ex)

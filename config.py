@@ -37,7 +37,7 @@ cities = {
         'id' : 3,
         'title' : 'Kish',
         'name' : 'کیش',
-        'airport' : 'مهرآباد',
+        'airport' : 'فرودگاه بین المللی کیش',
         'airportCode' : 'KIH',
         'timezone' : 'Asia/Tehran',
         'timezoneOffsetStr' : '+03:30',
@@ -52,8 +52,8 @@ cities = {
         'id': 4,
         'title' : 'Ahwaz',
         'name': 'اهواز',
-        'airport': 'مهرآباد',
-        'airportCode': 'KIH',
+        'airport': 'فرودگاه بین‌المللی اهواز',
+        'airportCode': 'AWZ',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
         'type': {
@@ -67,8 +67,8 @@ cities = {
         'id': 5,
         'title' : 'Isfahan',
         'name': 'اصفهان',
-        'airport': 'مهرآباد',
-        'airportCode': 'KIH',
+        'airport': 'فرودگاه بین المللی شهید بهشتی اصفهان',
+        'airportCode': 'IFN',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
         'type': {
@@ -82,8 +82,8 @@ cities = {
         'id': 6,
         'title' : 'Shiraz',
         'name': 'شیراز',
-        'airport': 'مهرآباد',
-        'airportCode': 'KIH',
+        'airport': 'فرودگاه بین المللی شهید دستغیب شیراز',
+        'airportCode': 'SYZ',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
         'type': {
@@ -97,8 +97,8 @@ cities = {
         'id': 7,
         'title' : 'Muscat',
         'name': 'مسقط',
-        'airport': 'مهرآباد',
-        'airportCode': 'KIH',
+        'airport': 'فرودگاه بین‌المللی مسقط',
+        'airportCode': 'MCT',
         'timezone': 'Asia/Muscat',
         'timezoneOffsetStr': '+04:00',
         'type': {
@@ -112,8 +112,8 @@ cities = {
         'id': 8,
         'title' : 'Gheshm',
         'name': 'قشم',
-        'airport': 'مهرآباد',
-        'airportCode': 'KIH',
+        'airport': 'فرودگاه بین‌المللی دیرستان قشم',
+        'airportCode': 'GSM',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
         'type': {
@@ -127,8 +127,8 @@ cities = {
         'id': 9,
         'title' : 'Tabriz',
         'name': 'تبریز',
-        'airport': 'مهرآباد',
-        'airportCode': 'KIH',
+        'airport': 'فرودگاه بین المللی تبریز',
+        'airportCode': 'TBZ',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
         'type': {
@@ -142,8 +142,8 @@ cities = {
         'id': 10,
         'title': 'Bandar%20Abass',
         'name': 'بندرعباس',
-        'airport': 'مهرآباد',
-        'airportCode': 'KIH',
+        'airport': 'فرودگاه بین المللی بندرعباس',
+        'airportCode': 'BND',
         'timezone': 'Asia/Tehran',
         'timezoneOffsetStr': '+03:30',
         'type': {
@@ -153,36 +153,531 @@ cities = {
             'internationalId': False,
         }
     },
-    # 11: 'Yerevan',
-    # 12: 'Istanbul_Sabiha',
-    # 13: 'Istanbul',
-    # 14: 'Antalya',
-    # 15: 'Tbilisi',
-    # 16: 'Dubai_Sharjeh',
-    # 17: 'Kerman',
-    # 18: 'Izmir',
-    # 19: 'Najaf',
-    # 20: 'Batumi',
-    # 21: 'Zahedan',
-    # 22: 'Gorgan',
-    # 23: 'Moscow_Sheremetyevo',
-    # 24: 'Bushehr',
-    # 25: 'Dalaman',
-    # 26: 'Abadan',
-    # 27: 'Antalya_Denizli',
-    # 28: 'Urmia',
-    # 29: 'Rimini_Italy',
-    # 30: 'Chahbahar',
-    # 31: 'Asalooye',
-    # 32: 'Yazd',
-    # 33: 'Erbil',
-    # 34: 'Ardabil',
-    # 35: 'Ankara',
-    # 36: 'Sulaymaniyah',
-    # 37: 'Ilam',
-    # 38: 'Kermanshah',
-    # 39: 'Almaty',
-    # 40: 'Moscow_Vnukovo',
+    'ایروان' : {
+        'id': 11,
+        'title': 'Yerevan',
+        'name': 'ایروان',
+        'airport': 'Zvartnots International Airport',
+        'airportCode': 'EVN',
+        'timezone': 'Asia/Yerevan',
+        'timezoneOffsetStr': '+04:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'استانبول (سبیها)' : {
+        'id': 12,
+        'title': 'Istanbul_Sabiha',
+        'name': 'استانبول (سبیها)',
+        'airport': 'Sabiha Gökçen International Airport',
+        'airportCode': 'SAW',
+        'timezone': 'Europe/Istanbul',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'استانبول' : {
+        'id': 13,
+        'title': 'Istanbul',
+        'name': 'استانبول',
+        'airport': 'Istanbul Atatürk Airport',
+        'airportCode': 'IST',
+        'timezone': 'Europe/Istanbul',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'آنتالیا' : {
+        'id': 14,
+        'title': 'Antalya',
+        'name': 'آنتالیا',
+        'airport': 'Antalya Airport',
+        'airportCode': 'AYT',
+        'timezone': 'Europe/Istanbul',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'تفلیس' : {
+        'id': 15,
+        'title': 'Tbilisi',
+        'name': 'تفلیس',
+        'airport': 'Tbilisi International Airport',
+        'airportCode': 'TBS',
+        'timezone': 'Asia/Tbilisi',
+        'timezoneOffsetStr': '+04:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'دبی' : {
+        'id': 16,
+        'title': 'Dubai_Sharjeh',
+        'name': 'دبی',
+        'airport': {
+            'en' : 'Dubai International Airport',
+            'fa' : 'Sharjah International Airport'
+        },
+        'airportCode': 'SHJ',
+        'timezone': 'Asia/Dubai',
+        'timezoneOffsetStr': '+04:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'کرمان' : {
+        'id': 17,
+        'title': 'Kerman',
+        'name': 'کرمان',
+        'airport': {
+            'en': 'Kerman Hashemi International Airport',
+            'fa': 'فرودگاه بین المللی هاشمی رفسنجانی کرمان',
+        },
+        'airportCode': 'KER',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'ازمیر' : {
+        'id': 18,
+        'title': 'Izmir',
+        'name': 'ازمیر',
+        'airport': {
+            'en': 'Adnan Menderes International Airport',
+            'fa': 'فرودگاه بین المللی ادنان مندرس ایزمیر',
+        },
+        'airportCode': 'ADB',
+        'timezone': 'Europe/Istanbul',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'نجف' : {
+        'id': 19,
+        'title': 'Najaf',
+        'name': 'نجف',
+        'airport': {
+            'en': 'Najaf International Airport',
+            'fa': 'فرودگاه بین المللی نجف',
+        },
+        'airportCode': 'NJF',
+        'timezone': 'Asia/Najaf',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'باتومی' : {
+        'id': 20,
+        'title': 'Batumi',
+        'name': 'باتومی',
+        'airport': {
+            'en': 'Batumi International Airport',
+            'fa': 'فرودگاه بین المللی باتومی',
+        },
+        'airportCode': 'BUS',
+        'timezone': 'Asia/Tbilisi',
+        'timezoneOffsetStr': '+04:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'زاهدان' : {
+        'id': 21,
+        'title': 'Zahedan',
+        'name': 'زاهدان',
+        'airport': {
+            'en': 'Zahedan International Airport',
+            'fa': 'فرودگاه بین المللی زاهدان',
+        },
+        'airportCode': 'ZAH',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'Gorgan' : {
+        'id': 22,
+        'title': 'Gorgan',
+        'name': 'گرگان',
+        'airport': {
+            'en': 'Gorgan Airport',
+            'fa': 'فرودگاه گرگان',
+        },
+        'airportCode': 'GBT',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'مسکو (شرمتیوو)' : {
+        'id': 23,
+        'title': 'Moscow_Sheremetyevo',
+        'name': 'مسکو (شرمتیوو)',
+        'airport': {
+            'en': 'Sheremetyevo International Airport',
+            'fa': 'فرودگاه بین المللی شرمتیو',
+        },
+        'airportCode': 'SVO',
+        'timezone': 'Europe/Moscow',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'بوشهر' : {
+        'id': 24,
+        'title': 'Bushehr',
+        'name': 'بوشهر',
+        'airport': {
+            'en': 'Bushehr Airport',
+            'fa': 'فرودگاه بوشهر',
+        },
+        'airportCode': 'BUZ',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'دالامان' : {
+        'id': 25,
+        'title': 'Dalaman',
+        'name': 'دالامان',
+        'airport': {
+            'en': 'Dalaman International Airport',
+            'fa': 'فرودگاه بین المللی دالمان',
+        },
+        'airportCode': 'DLM',
+        'timezone': 'Europe/Istanbul',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'Abadan' : {
+        'id': 26,
+        'title': 'Abadan',
+        'name': 'آبادان',
+        'airport': {
+            'en': 'Abadan Airport',
+            'fa': 'فرودگاه آبادان',
+        },
+        'airportCode': 'ABD',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'آنتالیا (دنیزلی)' : {
+        'id': 27,
+        'title': 'Antalya_Denizli',
+        'name': 'آنتالیا (دنیزلی)',
+        'airport': {
+            'en': 'Denizli Çardak Airport',
+            'fa': 'فرودگاه دنیزلی چارداک',
+        },
+        'airportCode': 'DNZ',
+        'timezone': 'Europe/Istanbul',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'ارومیه' : {
+        'id': 28,
+        'title': 'Urmia',
+        'name': 'ارومیه',
+        'airport': {
+            'en': 'Urmia Airport',
+            'fa': 'فرودگاه بین ‌المللی شهید باکری ارومیه',
+        },
+        'airportCode': 'OMI',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'ریمینی (ایتالیا)' : {
+        'id': 29,
+        'title': 'Rimini_Italy',
+        'name': 'ریمینی (ایتالیا)',
+        'airport': {
+            'en': 'Rimini Airport',
+            'fa': 'فرودگاه ریمینی',
+        },
+        'airportCode': 'RMI',
+        'timezone': 'Europe/Rome',
+        'timezoneOffsetStr': '+02:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'چابهار' : {
+        'id': 30,
+        'title': 'Chahbahar',
+        'name': 'چابهار',
+        'airport': {
+            'en': 'Konarak Airport',
+            'fa': 'فرودگاه چابهار کنارک',
+        },
+        'airportCode': 'ZBR',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'عسلویه' : {
+        'id': 31,
+        'title': 'Asalooye',
+        'name': 'عسلویه',
+        'airport': {
+            'en': 'Persian Gulf International Airport',
+            'fa': 'فرودگاه بین المللی خلیج فارس',
+        },
+        'airportCode': 'AWZ',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'یزد' :{
+        'id': 32,
+        'title': 'Yazd',
+        'name': 'یزد',
+        'airport': {
+            'en': 'Yazd Sadooghi International Airport',
+            'fa': 'فرودگاه شهید صدوقی یزد',
+        },
+        'airportCode': 'AZD',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 6,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'اربیل عراق' : {
+        'id': 33,
+        'title': 'Erbil',
+        'name': 'اربیل عراق',
+        'airport': {
+            'en': 'Erbil International Airport',
+            'fa': 'فرودگاه بین المللی اربیل',
+        },
+        'airportCode': 'EBL',
+        'timezone': 'Asia/Baghdad',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': True,
+        }
+    },
+    'اردبیل' : {
+        'id': 34,
+        'title': 'Ardabil',
+        'name': 'اردبیل',
+        'airport': {
+            'en': 'Ardabil Airport',
+            'fa': 'فرودگاه اردبیل',
+        },
+        'airportCode': 'ADU',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 10,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'آنکارا ترکیه' : {
+        'id': 35,
+        'title': 'Ankara',
+        'name': 'آنکارا ترکیه',
+        'airport': {
+            'en': 'Ankara Esenboga Airport',
+            'fa': 'فرودگاه اسنبوگا انقره',
+        },
+        'airportCode': 'ESB',
+        'timezone': 'Europe/Istanbul',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'سلیمانیه (عراق)' : {
+        'id': 36,
+        'title': 'Sulaymaniyah',
+        'name': 'سلیمانیه (عراق)',
+        'airport': {
+            'en': 'Sulaymaniyah International Airport',
+            'fa': 'فرودگاه بین المللی سلیمانیه',
+        },
+        'airportCode': 'ISU',
+        'timezone': 'Asia/Baghdad',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 12,
+        }
+    },
+    'ایلام' : {
+        'id': 37,
+        'title': 'Ilam',
+        'name': 'ایلام',
+        'airport': {
+            'en': 'Ilam Airport',
+            'fa': 'فرودگاه ایلام',
+        },
+        'airportCode': 'IIL',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 10,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'Kermanshah' : {
+        'id': 38,
+        'title': 'Kermanshah',
+        'name': 'کرمانشاه',
+        'airport': {
+            'en': 'Kermanshah International Airport',
+            'fa': 'فرودگاه بین‌المللی کرمانشاه',
+        },
+        'airportCode': 'KER',
+        'timezone': 'Asia/Tehran',
+        'timezoneOffsetStr': '+03:30',
+        'type': {
+            'domestic': True,
+            'domesticId': 10,
+            'international': False,
+            'internationalId': False,
+        }
+    },
+    'آلماتی (قزاقستان)' : {
+        'id': 39,
+        'title': 'Almaty',
+        'name': 'آلماتی (قزاقستان)',
+        'airport': {
+            'en': 'Almaty International Airport',
+            'fa': 'فرودگاه بین‌المللی الماتی',
+        },
+        'airportCode': 'ALA',
+        'timezone': 'Asia/Almaty',
+        'timezoneOffsetStr': '+06:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
+    'Moscow_Vnukovo': {
+        'id': 40,
+        'title': 'Moscow Vnukovo',
+        'name': 'مسکو (ونوکوفو)',
+        'airport': {
+            'en': 'Moscow Vnukovo Airport',
+            'fa': 'فرودگاه ونوکوفو مسکو',
+        },
+        'airportCode': 'VKO',
+        'timezone': 'Europe/Moscow',
+        'timezoneOffsetStr': '+03:00',
+        'type': {
+            'domestic': False,
+            'domesticId': False,
+            'international': True,
+            'internationalId': 5,
+        }
+    },
     # 41: 'Dezful',
     # 42: 'DELHI',
     # 43: 'Alanya',
