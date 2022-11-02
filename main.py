@@ -81,6 +81,25 @@ async def check_user(client, message):
         elif message.from_user.id in usersDatabase.keys():
             await start_menu(client, message)
 
+    except Exception as ex:
+        print(logging.ERROR, ex)
+        pass
+
+
+@app.on_message(filters.private)
+async def user_manager(client, message):
+    try:
+        await app.send_message(
+            chat_id=message.chat.id,
+            text='شما در این بخش می توانید پروفایل کاربری خود را مدیریت کنید.\nلطفا یکی از گزینه های زیر را انتخاب کنید',
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [InlineKeyboardButton("ویرایش اطلاعات", callback_data="create_user_account")],
+                    [InlineKeyboardButton("بازگشت به منوی اصلی 🏠", callback_data="backToMain")]
+                ]
+            )
+
+        )
 
     except Exception as ex:
         print(logging.ERROR, ex)
@@ -96,6 +115,8 @@ async def start_menu(client, message):
                 [
                     ["بلیط هواپیما ✈️"],
                     ["بلیط اتوبوس 🚌"],
+                    ["بلیط قطار 🚆"],
+                    ["پروفایل کاربری 📝"],
                     ["ارتباط با ما 📩"],
                 ],
                 resize_keyboard=True,
@@ -105,9 +126,13 @@ async def start_menu(client, message):
         if answer.text == "بلیط هواپیما ✈️":
             await flight_order(client, message)
         elif answer.text == "بلیط اتوبوس 🚌":
-            await app.send_message(chat_id=message.chat.id,
-                                   text='این بخش فعلا فعال نیست ⚠️')
+            await app.send_message(chat_id=message.chat.id, text='این بخش فعلا فعال نیست ⚠️')
             await start_menu(client, message)
+        elif answer.text == "بلیط قطار 🚆":
+            await app.send_message(chat_id=message.chat.id, text='این بخش فعلا فعال نیست ⚠️')
+            await start_menu(client, message)
+        elif answer.text == "پروفایل کاربری 📝":
+            await user_manager(client, message)
 
         elif answer.text == "ارتباط با ما 📩":
             await app.send_message(chat_id=message.chat.id,
@@ -596,21 +621,29 @@ async def callback_query_handler(client, callback_query):
             async for members in app.get_chat_members(chat_id=config.channelsIDs["Parvaz_charters"]):
                 if members.user.id == callback_query.from_user.id:
                     foundUser = True
-                    usersDatabase[callback_query.from_user.id] = {
-                        "username": callback_query.from_user.username,
-                        "firstName": callback_query.from_user.first_name,
-                        "id": callback_query.from_user.id,
-                        "membership": True,
-                        "membershipDate": datetime.datetime.now(pytz.timezone('Asia/Tehran')).strftime("%Y-%m-%d %H:%M:%S"),
-                    }
+                    if callback_query.from_user.id in usersDatabase:
+                        usersDatabase[callback_query.from_user.id] = {
+                            "username": callback_query.from_user.username,
+                            "firstName": callback_query.from_user.first_name,
+                            "id": callback_query.from_user.id,
+                            "membership": True,
+                            "membershipDate": datetime.datetime.now(pytz.timezone('Asia/Tehran')).strftime("%Y-%m-%d %H:%M:%S"),
+                        }
 
-                    await app.edit_message_text(
-                        chat_id=callback_query.message.chat.id,
-                        message_id=callback_query.message.id,
-                        text='عضویت شما تایید شد ✅',
-                    )
+                        await app.edit_message_text(
+                            chat_id=callback_query.message.chat.id,
+                            message_id=callback_query.message.id,
+                            text='عضویت شما تایید شد ✅',
+                        )
+                        await start_menu(client, callback_query.message)
 
-                    await start_menu(client, callback_query.message)
+                    else:
+                        await app.edit_message_text(
+                            chat_id=callback_query.message.chat.id,
+                            message_id=callback_query.message.id,
+                            text='⚠️ عضویت شما در کانال تایید نشد. لطفا ابتدا در کانال عضو شوید و سپس دوباره اقدام به تایید عضویت کنید',
+                        )
+                        await callback_query_handler(client, callback_query)
 
         elif callback_query.data == "create_user_account":
             try:
@@ -661,7 +694,6 @@ async def callback_query_handler(client, callback_query):
             except Exception as ex:
                 print(logging.ERROR, ex)
                 pass
-
 
         elif callback_query.data == "nextFlightResult":
             next_flight_result_Iter += 1
