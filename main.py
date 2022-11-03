@@ -259,17 +259,30 @@ async def international_flight_order (client, message):
             )
         )
 
-        destination_city = await app.ask(
-            chat_id=message.chat.id,
-            text='لطفا مقصد خود را انتخاب کنید:',
-            reply_markup=ReplyKeyboardMarkup(
-                [
-                    [city] for city in sorted(config.cities.keys(), key=lambda city: config.cities[city]['type']['internationalId']) if config.cities[city]['name'] != departure_city.text and config.cities[city]['type']['international'] == True
-                ],
-                resize_keyboard=True,
-                one_time_keyboard=True
+        if config.cities[departure_city.text]['type']['domestic'] == True:
+            destination_city = await app.ask(
+                chat_id=message.chat.id,
+                text='لطفا مقصد خود را انتخاب کنید:',
+                reply_markup=ReplyKeyboardMarkup(
+                    [
+                        [city] for city in sorted(config.cities.keys(), key=lambda city: config.cities[city]['type']['internationalId']) if config.cities[city]['name'] != departure_city.text and config.cities[city]['type']['international'] == True and config.cities[city]['type']['domestic'] == False
+                    ],
+                    resize_keyboard=True,
+                    one_time_keyboard=True
+                )
             )
-        )
+        elif config.cities[departure_city.text]['type']['domestic'] == False:
+            destination_city = await app.ask(
+                chat_id=message.chat.id,
+                text='لطفا مقصد خود را انتخاب کنید:',
+                reply_markup=ReplyKeyboardMarkup(
+                    [
+                        [city] for city in sorted(config.cities.keys(), key=lambda city: config.cities[city]['type']['internationalId']) if config.cities[city]['name'] != departure_city.text and config.cities[city]['type']['international'] == True and config.cities[city]['type']['domestic'] == True
+                    ],
+                    resize_keyboard=True,
+                    one_time_keyboard=True
+                )
+            )
 
         flight_date = await app.ask (
             chat_id=message.chat.id,
