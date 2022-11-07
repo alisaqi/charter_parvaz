@@ -631,33 +631,44 @@ async def callback_query_handler(client, callback_query):
     global usersDatabase
 
     try:
+        list_members = []
+
         if callback_query.data == "membershipApproval":
             async for members in app.get_chat_members(chat_id=config.channelsIDs["Parvaz_charters"]):
-                if members.user.id == callback_query.from_user.id:
-                    foundUser = True
-                    if callback_query.from_user.id in usersDatabase:
-                        usersDatabase[callback_query.from_user.id] = {
-                            "username": callback_query.from_user.username,
-                            "firstName": callback_query.from_user.first_name,
-                            "id": callback_query.from_user.id,
-                            "membership": True,
-                            "membershipDate": datetime.datetime.now(pytz.timezone('Asia/Tehran')).strftime("%Y-%m-%d %H:%M:%S"),
-                        }
+                list_members.append(members.user.id)
 
-                        await app.edit_message_text(
-                            chat_id=callback_query.message.chat.id,
-                            message_id=callback_query.message.id,
-                            text='عضویت شما تایید شد ✅',
-                        )
-                        await start_menu(client, callback_query.message)
+            if callback_query.from_user.id in list_members:
+                if callback_query.from_user.id in usersDatabase:
+                    await app.edit_message_text(
+                        chat_id=callback_query.message.chat.id,
+                        message_id=callback_query.message.id,
+                        text='عضویت شما تایید شد ✅',
+                    )
+                    await start_menu(client, callback_query.message)
+                elif callback_query.from_user.id not in usersDatabase:
+                    usersDatabase[callback_query.from_user.id] = {
+                        "username": callback_query.from_user.username,
+                        "firstName": callback_query.from_user.first_name,
+                        "id": callback_query.from_user.id,
+                        "membership": True,
+                        "membershipDate": datetime.datetime.now(pytz.timezone('Asia/Tehran')).strftime(
+                            "%Y-%m-%d %H:%M:%S"),
+                    }
+                    await app.edit_message_text(
+                        chat_id=callback_query.message.chat.id,
+                        message_id=callback_query.message.id,
+                        text='عضویت شما تایید شد ✅',
+                    )
+                    await start_menu(client, callback_query.message)
+            else:
+                await app.edit_message_text(
+                    chat_id=callback_query.message.chat.id,
+                    message_id=callback_query.message.id,
+                    text='⚠️ عضویت شما در کانال تایید نشد. لطفا ابتدا در کانال عضو شوید و سپس دوباره روی /start کلیک کنید.',
+                )
+                # await callback_query_handler(client, callback_query)
 
-                    else:
-                        await app.edit_message_text(
-                            chat_id=callback_query.message.chat.id,
-                            message_id=callback_query.message.id,
-                            text='⚠️ عضویت شما در کانال تایید نشد. لطفا ابتدا در کانال عضو شوید و سپس دوباره اقدام به تایید عضویت کنید',
-                        )
-                        await callback_query_handler(client, callback_query)
+
 
         elif callback_query.data == "create_user_account":
             try:
@@ -737,7 +748,6 @@ async def callback_query_handler(client, callback_query):
     except Exception as ex:
         print(logging.ERROR, ex)
         pass
-
 
 
 
