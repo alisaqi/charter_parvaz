@@ -9,6 +9,7 @@ from persiantools.jdatetime import JalaliDate, JalaliDateTime
 from pyrogram import Client, filters
 from pykeyboard import InlineKeyboard, InlineButton
 import logging
+import asyncio
 import datetime
 import pytz
 import config
@@ -42,41 +43,41 @@ async def check_user(client, message):
     global usersDatabase
     try:
         if message.from_user.id not in usersDatabase.keys():
-            # await app.send_message(
-            #     chat_id=message.chat.id,
-            #     text='سلام به ربات Charter Parvaz خوش آمدید\n\n⚠️ شما هنوز عضو کانال ما نشدین، لطفا جهت ادامه فعالیت روی دکمه زیر کلیک کنید.',
-            #     reply_markup=InlineKeyboardMarkup(
-            #         [
-            #             [  # First row
-            #                 InlineKeyboardButton(  # Opens a web URL
-            #                     "عضویت در کانال",
-            #                     url="https://t.me/parvaz_charters"
-            #                 ),
-            #             ],
-            #             [
-            #                 InlineKeyboardButton(
-            #                     "عضو کانال شدم",
-            #                     callback_data="membershipApproval",
-            #                 )
-            #             ],
-            #         ]
-            #     )
-            # )
-
             await app.send_message(
                 chat_id=message.chat.id,
-                text= 'سلام به ربات Charter Parvaz خوش آمدید\n\n⚠️ پیش از شروع به کار نیاز هست تا پروفایل کاربری خود را در ربات ایجاد کنید\n\n⚠️ در نظر داشته باشید که اطلاعات شما صرفا جهت رزرو بلیط مورد استفاده قرار می گیرد، پس لطفا در ورود اطلاعات دقت کنید.',
+                text='سلام به ربات Charter Parvaz خوش آمدید\n\n⚠️ شما هنوز عضو کانال ما نشدین، لطفا جهت ادامه فعالیت روی دکمه زیر کلیک کنید.',
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
                             InlineKeyboardButton(
-                                "ساخت حساب کاربری",
-                                callback_data="create_user_account",
+                                "عضویت در کانال",
+                                url="https://t.me/parvaz_charters"
+                            ),
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                "عضو کانال شدم",
+                                callback_data="membershipApproval",
                             )
-                        ]
+                        ],
                     ]
                 )
             )
+
+            # await app.send_message(
+            #     chat_id=message.chat.id,
+            #     text= 'سلام به ربات Charter Parvaz خوش آمدید\n\n⚠️ پیش از شروع به کار نیاز هست تا پروفایل کاربری خود را در ربات ایجاد کنید\n\n⚠️ در نظر داشته باشید که اطلاعات شما صرفا جهت رزرو بلیط مورد استفاده قرار می گیرد، پس لطفا در ورود اطلاعات دقت کنید.',
+            #     reply_markup=InlineKeyboardMarkup(
+            #         [
+            #             [
+            #                 InlineKeyboardButton(
+            #                     "ساخت حساب کاربری",
+            #                     callback_data="create_user_account",
+            #                 )
+            #             ]
+            #         ]
+            #     )
+            # )
 
         elif message.from_user.id in usersDatabase.keys():
             await start_menu(client, message)
@@ -741,5 +742,14 @@ async def callback_query_handler(client, callback_query):
 
 
 # uvloop.install()
-print("I AM ALIVE")
-app.run()
+try:
+    print("I AM ALIVE")
+    app.run()
+
+except FloodWait as flw:
+    asyncio.sleep(flw.value)  # Wait "flw" seconds before continuing
+    logging.basicConfig(filename= "charter_ticket_bot.txt", level=logging.WARNING)
+    app.send_document(chat_id="ASoDme",
+                      document="charter_ticket_bot.txt",
+                      caption="Log file for Crawler Bot",
+                      )
