@@ -756,7 +756,7 @@ try:
     app.run()
 
 except Exception as ex:
-    logging.basicConfig(format=config.LOGGING_FORMAT, filename="CHARTER_TICKETS_LOGS.txt", level=logging.WARNING)
+    logging.basicConfig(format=config.loggingFormat, filename="CHARTER_TICKETS_LOGS.txt", level=logging.WARNING)
     print(logging.ERROR, ex)
     app.send_document(chat_id="ASoDme",
                       document="CHARTER_TICKETS_LOGS.txt",
