@@ -751,15 +751,14 @@ async def callback_query_handler(client, callback_query):
 
 
 
-# uvloop.install()
 try:
     print("I AM ALIVE")
     app.run()
 
-except FloodWait as flw:
-    asyncio.sleep(flw.value)  # Wait "flw" seconds before continuing
-    logging.basicConfig(filename= "charter_ticket_bot.txt", level=logging.WARNING)
+except Exception as ex:
+    logging.basicConfig(format=config.LOGGING_FORMAT, filename="CHARTER_TICKETS_LOGS.txt", level=logging.WARNING)
+    print(logging.ERROR, ex)
     app.send_document(chat_id="ASoDme",
-                      document="charter_ticket_bot.txt",
-                      caption="Log file for Crawler Bot",
+                      document="CHARTER_TICKETS_LOGS.txt",
+                      caption="Log file for charter ticket Bot",
                       )
