@@ -502,13 +502,14 @@ async def callback_query_handler(client, callback_query):
                     text="⚠️ شماره پاسپورت نامعتبر است. لطفا شماره پاسپورت معتبر یا عدد 0 را وارد کنید."
                 )
             
+            # Store user data with consistent formatting
             users_database[callback_query.from_user.id] = {
                 "username": callback_query.from_user.username,
                 "farsi_name": farsi_name.text.strip(),
-                "english_name": english_name.text.strip(),
-                "phone_number": phone_number.text.strip(),
+                "english_name": english_name.text.strip().title(),  # Capitalize names
+                "phone_number": phone_number.text.strip().replace(' ', ''),  # Remove spaces
                 "national_id": national_id.text.strip(),
-                "passport_number": passport_number.text.strip().upper(),
+                "passport_number": passport_number.text.strip().upper(),  # Uppercase for passport
             }
 
             await app.send_message(chat_id=callback_query.from_user.id, text="اطلاعات شما با موفقیت ثبت شد ✅")

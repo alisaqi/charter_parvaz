@@ -17,7 +17,7 @@ CONTACT_URL = 'https://t.me/ASoDme'
 # Input validation patterns
 PERSIAN_NAME_PATTERN = re.compile(r'^[\u0600-\u06FF\s]+$')
 ENGLISH_NAME_PATTERN = re.compile(r'^[a-zA-Z\s]+$')
-PHONE_PATTERN = re.compile(r'^(09|9)\d{9}$')
+PHONE_PATTERN = re.compile(r'^09\d{9}$')
 NATIONAL_ID_PATTERN = re.compile(r'^\d{10}$')
 PASSPORT_PATTERN = re.compile(r'^[A-Z0-9]{1,9}$|^0$')
 
