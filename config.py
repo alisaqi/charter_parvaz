@@ -1,7 +1,17 @@
-TOKEN = "5633146247:AAGppS_-l-pKkxiq_goCs9-Wme7WaZWF6ik"
-loggingFormat = {
-    'A': '%(asctime)s -- %(filename)s --> Function: %(funcName)s() --> Line: %(lineno)s -- %(levelname)s -- Message: %(message)s',
-}
+import os
+
+# Bot credentials - should be set via environment variables
+API_ID = int(os.getenv('TELEGRAM_API_ID', '0'))
+API_HASH = os.getenv('TELEGRAM_API_HASH', '')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
+
+# Logging configuration
+LOGGING_FORMAT = '%(asctime)s -- %(filename)s --> Function: %(funcName)s() --> Line: %(lineno)s -- %(levelname)s -- Message: %(message)s'
+LOG_FILE = 'CHARTER_TICKETS_LOGS.txt'
+
+# URL configuration
+TICKET_BASE_URL = 'http://ticket-charter.com/Ticket'
+CONTACT_URL = 'https://t.me/ASoDme'
 cities = {
     'تهران' : {
         'id' : 1,
@@ -1419,11 +1429,14 @@ cities = {
     },
 }
 
-flightsCommision = {
+# Flight commission rates
+flights_commission = {
     'اکونومی': 0.05,
     'سیستمی': 0.07,
     'بیزینس': 0.09,
 }
-channelsIDs = {
-    "Parvaz_charters" : -1001882499515,
+
+# Channel IDs
+channels_ids = {
+    "Parvaz_charters": -1001882499515,
 }
