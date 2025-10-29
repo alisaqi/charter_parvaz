@@ -437,42 +437,82 @@ async def callback_query_handler(client, callback_query):
         elif callback_query.data == "create_user_account":
             await app.delete_messages(chat_id=callback_query.message.chat.id, message_ids=callback_query.message.id)
 
-            farsi_name = await app.ask(
-                chat_id=callback_query.from_user.id,
-                text="لطفا نام و نام خانوادگی خود را به فارسی ارسال کنید:",
-            )
-            english_name = await app.ask(
-                chat_id=callback_query.from_user.id,
-                text="لطفا نام و نام خانوادگی خود را به انگلیسی ارسال کنید (دقت کنید که اسم شما باید منطبق با اطلاعات درج شده در پاسپورت شما باشد) :",
-            )
-            phone_number = await app.ask(
-                chat_id=callback_query.from_user.id,
-                text="لطفا شماره تلفن همراه خود را ارسال کنید :",
-            )
-            national_id = await app.ask(
-                chat_id=callback_query.from_user.id,
-                text="لطفا کد ملی خود را ارسال کنید :",
-            )
-            passport_number = await app.ask(
-                chat_id=callback_query.from_user.id,
-                text="لطفا شماره پاسپورت خود را ارسال کنید (درصورتی که پاسپورت ندارید، عدد صفر را وارد کنید) :",
-            )
+            # Get and validate farsi name
+            while True:
+                farsi_name = await app.ask(
+                    chat_id=callback_query.from_user.id,
+                    text="لطفا نام و نام خانوادگی خود را به فارسی ارسال کنید:",
+                )
+                if config.validate_persian_name(farsi_name.text):
+                    break
+                await app.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text="⚠️ نام فارسی نامعتبر است. لطفا فقط از حروف فارسی استفاده کنید."
+                )
+            
+            # Get and validate english name
+            while True:
+                english_name = await app.ask(
+                    chat_id=callback_query.from_user.id,
+                    text="لطفا نام و نام خانوادگی خود را به انگلیسی ارسال کنید (دقت کنید که اسم شما باید منطبق با اطلاعات درج شده در پاسپورت شما باشد) :",
+                )
+                if config.validate_english_name(english_name.text):
+                    break
+                await app.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text="⚠️ نام انگلیسی نامعتبر است. لطفا فقط از حروف انگلیسی استفاده کنید."
+                )
+            
+            # Get and validate phone number
+            while True:
+                phone_number = await app.ask(
+                    chat_id=callback_query.from_user.id,
+                    text="لطفا شماره تلفن همراه خود را ارسال کنید (مثال: 09123456789):",
+                )
+                if config.validate_phone_number(phone_number.text):
+                    break
+                await app.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text="⚠️ شماره تلفن نامعتبر است. لطفا شماره موبایل 11 رقمی خود را وارد کنید."
+                )
+            
+            # Get and validate national ID
+            while True:
+                national_id = await app.ask(
+                    chat_id=callback_query.from_user.id,
+                    text="لطفا کد ملی 10 رقمی خود را ارسال کنید:",
+                )
+                if config.validate_national_id(national_id.text):
+                    break
+                await app.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text="⚠️ کد ملی نامعتبر است. لطفا کد ملی 10 رقمی خود را وارد کنید."
+                )
+            
+            # Get and validate passport number
+            while True:
+                passport_number = await app.ask(
+                    chat_id=callback_query.from_user.id,
+                    text="لطفا شماره پاسپورت خود را ارسال کنید (درصورتی که پاسپورت ندارید، عدد صفر را وارد کنید) :",
+                )
+                if config.validate_passport(passport_number.text):
+                    break
+                await app.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text="⚠️ شماره پاسپورت نامعتبر است. لطفا شماره پاسپورت معتبر یا عدد 0 را وارد کنید."
+                )
             
             users_database[callback_query.from_user.id] = {
                 "username": callback_query.from_user.username,
-                "farsi_name": farsi_name.text,
-                "english_name": english_name.text,
-                "phone_number": phone_number.text,
-                "national_id": national_id.text,
-                "passport_number": passport_number.text,
+                "farsi_name": farsi_name.text.strip(),
+                "english_name": english_name.text.strip(),
+                "phone_number": phone_number.text.strip(),
+                "national_id": national_id.text.strip(),
+                "passport_number": passport_number.text.strip().upper(),
             }
 
-            if callback_query.from_user.id in users_database.keys():
-                await app.send_message(chat_id=callback_query.from_user.id, text="اطلاعات شما با موفقیت ثبت شد ✅")
-                await start_menu(client, callback_query.message)
-            else:
-                await app.send_message(chat_id=callback_query.from_user.id, text="ثبت اطلاعات شما با خطا مواجه شد، لطفا مجددا تلاش کنید ⛔️")
-                await callback_query_handler(client, callback_query)
+            await app.send_message(chat_id=callback_query.from_user.id, text="اطلاعات شما با موفقیت ثبت شد ✅")
+            await start_menu(client, callback_query.message)
 
         elif callback_query.data == "nextFlightResult":
             next_flight_result_iter += 1
