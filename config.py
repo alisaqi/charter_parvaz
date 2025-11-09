@@ -1,7 +1,50 @@
-TOKEN = "5633146247:AAGppS_-l-pKkxiq_goCs9-Wme7WaZWF6ik"
-loggingFormat = {
-    'A': '%(asctime)s -- %(filename)s --> Function: %(funcName)s() --> Line: %(lineno)s -- %(levelname)s -- Message: %(message)s',
-}
+import os
+import re
+
+# Bot credentials - should be set via environment variables
+API_ID = int(os.getenv('TELEGRAM_API_ID', '0'))
+API_HASH = os.getenv('TELEGRAM_API_HASH', '')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
+
+# Logging configuration
+LOGGING_FORMAT = '%(asctime)s -- %(filename)s --> Function: %(funcName)s() --> Line: %(lineno)s -- %(levelname)s -- Message: %(message)s'
+LOG_FILE = 'CHARTER_TICKETS_LOGS.txt'
+
+# URL configuration
+TICKET_BASE_URL = 'http://ticket-charter.com/Ticket'
+CONTACT_URL = 'https://t.me/ASoDme'
+
+# Input validation patterns
+PERSIAN_NAME_PATTERN = re.compile(r'^[\u0600-\u06FF\s]+$')
+ENGLISH_NAME_PATTERN = re.compile(r'^[a-zA-Z\s]+$')
+PHONE_PATTERN = re.compile(r'^09\d{9}$')
+NATIONAL_ID_PATTERN = re.compile(r'^\d{10}$')
+PASSPORT_PATTERN = re.compile(r'^[A-Z0-9]{1,9}$|^0$')
+
+
+def validate_persian_name(name):
+    """Validate Persian name input."""
+    return bool(name and PERSIAN_NAME_PATTERN.match(name.strip()))
+
+
+def validate_english_name(name):
+    """Validate English name input."""
+    return bool(name and ENGLISH_NAME_PATTERN.match(name.strip()))
+
+
+def validate_phone_number(phone):
+    """Validate Iranian phone number."""
+    return bool(phone and PHONE_PATTERN.match(phone.strip().replace(' ', '')))
+
+
+def validate_national_id(national_id):
+    """Validate Iranian national ID."""
+    return bool(national_id and NATIONAL_ID_PATTERN.match(national_id.strip()))
+
+
+def validate_passport(passport):
+    """Validate passport number or 0 for no passport."""
+    return bool(passport and PASSPORT_PATTERN.match(passport.strip().upper()))
 cities = {
     'تهران' : {
         'id' : 1,
@@ -1419,11 +1462,14 @@ cities = {
     },
 }
 
-flightsCommision = {
+# Flight commission rates
+flights_commission = {
     'اکونومی': 0.05,
     'سیستمی': 0.07,
     'بیزینس': 0.09,
 }
-channelsIDs = {
-    "Parvaz_charters" : -1001882499515,
+
+# Channel IDs
+channels_ids = {
+    "Parvaz_charters": -1001882499515,
 }
